@@ -12,6 +12,15 @@ public class ComboSystem : MonoBehaviour
     public Image attack2Indicator; // yellow
     public Image attack3Indicator; // red
 
+    [Header("Crosshair Settings")]
+    public Image crosshairImage;
+
+    [Header("Lunge Settings")]
+    public float lungeForce = 5.0f;
+    public float lungeDuration = 0.1f;
+
+    private CharacterController _controller;
+
     // reference to the inputs
     private StarterAssets.StarterAssetsInputs _input;
     private float _lastAttackTime;
@@ -20,6 +29,7 @@ public class ComboSystem : MonoBehaviour
     void Start()
     {
         _input = GetComponent<StarterAssets.StarterAssetsInputs>();
+        _controller = GetComponent<CharacterController>();
         ResetCombo();
     }
 
@@ -42,6 +52,16 @@ public class ComboSystem : MonoBehaviour
 
     void PerformAttack()
     {
+        // trigger lunger burst
+        StartCoroutine(LungeForward());
+
+        // shot a ray from the center of the screen
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            Debug.Log("Chrono_Blade would have hit: " + hit.collider.name);
+        }
+
         // update the timer
         _lastAttackTime = Time.time;
 
@@ -83,6 +103,11 @@ public class ComboSystem : MonoBehaviour
         if (step == 2) attack2Indicator.color = Color.yellow;
         if (step == 3) attack3Indicator.color = Color.red;
 
+        if (step == 0) crosshairImage.color = Color.white; // Neutral
+        else if (step == 1) crosshairImage.color = Color.green; // First hit
+        else if (step == 2) crosshairImage.color = Color.yellow; // Second hit
+        else if (step == 3) crosshairImage.color = Color.red; // Finisher!
+
     }
 
     void ResetCombo()
@@ -90,5 +115,19 @@ public class ComboSystem : MonoBehaviour
         comboCount = 0;
         Debug.Log("Combo Reset");
         UpdateUI(0); // dim all lights
+    }
+
+    private System.Collections.IEnumerator LungeForward()
+    {
+        float startTime = Time.time;
+
+        while (Time.time < startTime + lungeDuration)
+        {
+            // move the controller in the direction the player is facing
+            _controller.Move(transform.forward * lungeForce * Time.deltaTime);
+
+            // wait for next frame
+            yield return null;
+        }
     }
 }
