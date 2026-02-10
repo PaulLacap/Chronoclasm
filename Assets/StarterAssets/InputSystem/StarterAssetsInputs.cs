@@ -12,6 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool attack;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -21,6 +22,10 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
+		public void OnAttack(InputValue value)
+		{
+			attack = value.isPressed;
+		}
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
