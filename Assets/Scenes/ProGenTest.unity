@@ -415,8 +415,8 @@ MonoBehaviour:
   dungeonSize: {x: 10, y: 1}
   roomSize: 12
   roomPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 359cf0e4e32665cb5b13e871e06de366, type: 2}
+  - {fileID: 11400000, guid: 4cc55f831f15ebcbe817eac0c9a00e2f, type: 2}
 --- !u!4 &2108145457
 Transform:
   m_ObjectHideFlags: 0

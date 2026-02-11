@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ba56a0cbcce41bb8a0884406a0aa45, type: 3}
   m_Name: FourDoorHallwayTest
   m_EditorClassIdentifier: Assembly-CSharp::RoomDefinition
-  prefab: {fileID: 0}
-  openNorth: 0
-  openEast: 0
-  openSouth: 0
-  openWest: 0
+  prefab: {fileID: 677984682202009931, guid: 30d168f88164c01ebb6110b68cef4a5e, type: 3}
+  openNorth: 1
+  openEast: 1
+  openSouth: 1
+  openWest: 1
