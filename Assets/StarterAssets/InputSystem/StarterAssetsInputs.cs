@@ -21,8 +21,16 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+        [Header("Shooting")]
+        public bool shoot;
+
 #if ENABLE_INPUT_SYSTEM
-		public void OnAttack(InputValue value)
+        public void OnShoot(InputValue value)
+        {
+            shoot = value.isPressed;
+        }
+
+        public void OnAttack(InputValue value)
 		{
 			attack = value.isPressed;
 		}
