@@ -110,6 +110,9 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
+        private Inventory _inventory;
+
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -134,6 +137,8 @@ namespace StarterAssets
 
         private void Start()
         {
+            _inventory = GetComponent<Inventory>();
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -365,6 +370,15 @@ namespace StarterAssets
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Coin"))
+            {
+                _inventory.AddCoin(1);
+                Destroy(other.gameObject);
             }
         }
     }
