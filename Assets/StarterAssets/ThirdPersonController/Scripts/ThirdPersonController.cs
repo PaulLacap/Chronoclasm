@@ -86,6 +86,8 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        private bool _isAttacking; // Attacking boolean (placed in player as I feel like it makes sense)
+
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -97,6 +99,8 @@ namespace StarterAssets
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDAttack;
+
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -135,7 +139,6 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -150,14 +153,19 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            _animIDAttack = Animator.StringToHash("Attack");
+
         }
 
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
 
+            
             JumpAndGravity();
             GroundedCheck();
+            HandleAttack(); //Adding the two methods I created to Update for the player's attacking animation
+            UpdateAttackState();
             Move();
         }
 
@@ -365,6 +373,34 @@ namespace StarterAssets
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }
+
+        // Checking for a new attack input.
+        private void HandleAttack()
+        {
+            if (!_hasAnimator) return;
+
+            if (_isAttacking) return;
+
+            if (_input.attack)
+            {
+                _isAttacking = true;
+                _animator.SetTrigger(_animIDAttack);
+                _input.attack = false;
+            }
+        }
+
+        // Verifying whether the player is attacking to lock the animation into attack.
+        private void UpdateAttackState()
+        {
+            if (!_hasAnimator || !_isAttacking) return;
+
+            AnimatorStateInfo state = _animator.GetCurrentAnimatorStateInfo(0);
+
+            if (state.IsName("Attack") && state.normalizedTime >= 1f)
+            {
+                _isAttacking = false;
             }
         }
     }
