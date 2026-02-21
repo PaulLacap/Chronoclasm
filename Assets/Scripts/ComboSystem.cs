@@ -52,21 +52,32 @@ public class ComboSystem : MonoBehaviour
 
     void PerformAttack()
     {
+        // increment the combo step
+        comboCount++;
+
         // trigger lunger burst
         StartCoroutine(LungeForward());
 
         // shot a ray from the center of the screen
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 10.0f))
         {
-            Debug.Log("Chrono_Blade would have hit: " + hit.collider.name);
+            // Check if what we hit has the IDamagable interface
+            IDamageable target = hit.collider.GetComponent<IDamageable>();
+
+            if (target != null)
+            {
+                // Calculate damage (you could make the finisher deal more!)
+                int damageToDeal = (comboCount == 3) ? 50 : 20;
+
+                target.TakeDamage(damageToDeal);
+                Debug.Log("Chronoblade dealt " + damageToDeal + "damage to " + hit.collider.name);
+            }
         }
 
         // update the timer
         _lastAttackTime = Time.time;
 
-        // increment the combo step
-        comboCount++;
 
         // handle the logic based on which step we are on
         if (comboCount == 1)
