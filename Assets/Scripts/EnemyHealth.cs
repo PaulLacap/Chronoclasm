@@ -13,7 +13,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
-        rend = GetComponent<Renderer>();
+        rend = GetComponentInChildren<Renderer>(); 
         originalColor = rend.material.color;
     }
 
