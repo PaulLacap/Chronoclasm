@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using static UnityEngine.Rendering.ProbeAdjustmentVolume;
 
 public class RangedSystem : MonoBehaviour
 {
@@ -24,7 +25,6 @@ public class RangedSystem : MonoBehaviour
         _input = GetComponent<StarterAssets.StarterAssetsInputs>();
         _controller = GetComponent<CharacterController>();
         _mainCamera = Camera.main;
-
         bulletTrail.positionCount = 2;
     }
 
@@ -61,8 +61,16 @@ public class RangedSystem : MonoBehaviour
             Debug.Log("Shot hit: " + hit.transform.name);
             targetPoint = hit.point;
 
-            // Sprint 1 Demo Feature: Simple Feedback
-            // If the target has a Rigidbody, push it!
+            IDamageable target = hit.collider.GetComponent<IDamageable>();
+
+            if (target != null)
+            {
+                // Cast the float 'damage' to an int if your interface uses int
+                target.TakeDamage((int)damage);
+                Debug.Log("Ranged hit dealt " + damage + " damage!");
+            }
+
+            // If the target has a Rigidbody, push it
             if (hit.rigidbody != null)
             {
                 hit.rigidbody.AddForce(-hit.normal * 100f);
