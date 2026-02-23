@@ -135,10 +135,11 @@ public class GoblinController : MonoBehaviour
     {
         Debug.Log("Dead");
         isDead = true;
-
+        
         agent.isStopped = true;
         agent.enabled = false;
 
+        animator.SetBool("IsAttacking", false);
         animator.SetBool("IsDead", true);
 
         Destroy(gameObject, 5f);
